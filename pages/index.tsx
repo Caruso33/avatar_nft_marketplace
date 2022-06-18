@@ -13,7 +13,7 @@ import NftInterface from "../types/NftInterface"
 
 export default function Home() {
   const [nfts, setNfts] = useState<NftInterface[]>([])
-  const [loadingState, setLoadingState] = useState("not-loaded")
+  const [loadingState, setLoadingState] = useState("")
   const [loadingBuy, setLoadingBuy] = useState(false)
   const [error, setError] = useState("")
 
@@ -78,7 +78,6 @@ export default function Home() {
         setError("No active provider found. Please connect to a wallet.")
         return
       }
-      setError("")
 
       const signer = library.getSigner()
 

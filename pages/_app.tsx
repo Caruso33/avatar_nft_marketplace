@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <Web3ReactProvider getLibrary={getLibrary}>
       <nav className="border-b p-6">
         <div className="flex justify-between items-center">
-          <p className="text-4xl font-bold tracking-widest">
+          <p className="text-4xl font-bold tracking-widest font-serif">
             Avatar NFT Marketplace
           </p>
 

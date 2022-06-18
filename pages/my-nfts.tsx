@@ -1,38 +1,50 @@
+import { useWeb3React } from "@web3-react/core"
 import { ethers } from "ethers"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import Web3Modal from "web3modal"
-import NFTMarket from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json"
 import { getNftData } from "../components/index/utils"
-import { nftMarketAddress } from "../config"
-import MarketItemInterface from "../types/MarketItemInterface"
+import {
+  contractAddresses,
+  contractArtifact,
+} from "../constants/hardhat-helper"
 import NftInterface from "../types/NftInterface"
 
 export default function MyAssets() {
   const [nfts, setNfts] = useState<NftInterface[]>([])
-  const [loadingState, setLoadingState] = useState("not-loaded")
+  const [loadingState, setLoadingState] = useState("")
+
+  const [error, setError] = useState("")
+
+  const { active, chainId, library } = useWeb3React()
 
   const router = useRouter()
 
   useEffect(() => {
-    loadNFTs()
+    loadMyNFTs()
   }, [])
 
-  async function loadNFTs() {
-    const web3Modal = new Web3Modal({
-      network: "mainnet",
-      cacheProvider: true,
-    })
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
+  useEffect(() => {
+    if (active && error) {
+      setError("")
+      loadMyNFTs()
+    }
+  }, [active])
+
+  async function loadMyNFTs() {
+    if (!active) {
+      setError("No active provider found. Please connect to a wallet.")
+      return
+    }
+    const signer = library.getSigner()
 
     const contract = new ethers.Contract(
-      nftMarketAddress,
-      NFTMarket.abi,
+      contractAddresses[chainId],
+      contractArtifact.abi,
       signer
     )
+
+    setLoadingState("not-loaded")
 
     let items: NftInterface[] = []
     try {
@@ -61,6 +73,12 @@ export default function MyAssets() {
   return (
     <div className="flex justify-center">
       <div className="p-4">
+        {error && (
+          <p className="mt-4 text-center text-xl font-bold text-red-200">
+            {error}
+          </p>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {nfts.map((nft: NftInterface, i) => {
             return (

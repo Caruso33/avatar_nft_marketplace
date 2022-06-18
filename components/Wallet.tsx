@@ -1,11 +1,24 @@
 import { useWeb3React } from "@web3-react/core"
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector"
 import Router from "next/router"
+import { useEffect, useRef } from "react"
 import { BiWallet } from "react-icons/bi"
 import connectors from "./web3/connectors"
 
 function Wallet() {
   const { active, account, activate, deactivate } = useWeb3React()
+
+  const prevAccount = useRef(account)
+
+  // useEffect(() => {
+  //   if (!prevAccount.current) prevAccount.current = account
+
+  //   if (account && prevAccount.current && prevAccount.current !== account) {
+  //     console.log("Account changed, reloading page.")
+  //     prevAccount.current = account
+  //     Router.reload()
+  //   }
+  // }, [account])
 
   function createConnectHandler(connectorId: string) {
     return async () => {
@@ -42,7 +55,7 @@ function Wallet() {
     return (
       <div className="flex">
         <div style={{ maxWidth: "30vw", wordBreak: "break-all" }}>
-          <div className="w-full text-center">
+          <div className="flex justify-center">
             <BiWallet size={20} />
           </div>
 
@@ -50,7 +63,7 @@ function Wallet() {
         </div>
 
         <button
-          className="mt-4 ml-3 bg-gray-700 text-white font-bold py-2 px-2 rounded"
+          className="ml-3 bg-gray-700 text-white font-bold py-2 px-2 rounded"
           onClick={handleDisconnect}
         >
           Disconnect
@@ -63,7 +76,7 @@ function Wallet() {
     <div>
       {Object.keys(connectors).map((v) => (
         <button
-          className="mt-4 ml-2 bg-gray-700 text-white font-bold py-2 px-2 rounded"
+          className="ml-2 bg-gray-700 text-white font-bold py-2 px-2 rounded"
           key={v}
           onClick={createConnectHandler(v)}
         >

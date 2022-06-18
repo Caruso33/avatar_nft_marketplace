@@ -1,29 +1,50 @@
+import { useWeb3React } from "@web3-react/core"
 import { ethers } from "ethers"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { getNftData } from "../components/index/utils"
 import Spinner from "../components/Spinner"
 import { getWeb3Connection } from "../components/web3/utils"
-import { contractArtifact, contractAddresses } from "../constants/hardhat-helper"
+import {
+  contractArtifact,
+  contractAddresses,
+} from "../constants/hardhat-helper"
 import MarketItemInterface from "../types/MarketItemInterface"
 import NftInterface from "../types/NftInterface"
 
 export default function CreatorDashboard() {
   const [nftsCreated, setNftsCreated] = useState<NftInterface[]>([])
   const [nftsSelling, setNftsSelling] = useState<NftInterface[]>([])
-  const [loadingState, setLoadingState] = useState("not-loaded")
+  const [loadingState, setLoadingState] = useState("")
   const [loadingBurnOrRevoke, setLoadingBurnOrRevoke] = useState(false)
+
+  const [error, setError] = useState("")
+
+  const { active, chainId, library } = useWeb3React()
 
   useEffect(() => {
     loadNFTsCreated()
     loadNFTsSelling()
   }, [])
 
+  useEffect(() => {
+    if (active && error) {
+      setError("")
+      loadNFTsCreated()
+      loadNFTsSelling()
+    }
+  }, [active])
+
   async function loadNFTsCreated() {
-    const { network, signer } = await getWeb3Connection()
+    if (!active) {
+      setError("No active provider found. Please connect to a wallet.")
+      return
+    }
+
+    const signer = library.getSigner()
 
     const contract = new ethers.Contract(
-      contractAddresses[network.chainId],
+      contractAddresses[chainId],
       contractArtifact.abi,
       signer
     )
@@ -46,10 +67,15 @@ export default function CreatorDashboard() {
   }
 
   async function loadNFTsSelling() {
-    const { network, signer } = await getWeb3Connection()
+    if (!active) {
+      setError("No active provider found. Please connect to a wallet.")
+      return
+    }
+
+    const signer = library.getSigner()
 
     const contract = new ethers.Contract(
-      contractAddresses[network.chainId],
+      contractAddresses[chainId],
       contractArtifact.abi,
       signer
     )
@@ -72,12 +98,17 @@ export default function CreatorDashboard() {
   }
 
   async function burnNft(nft: NftInterface) {
-    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
+    if (!active) {
+      setError("No active provider found. Please connect to a wallet.")
+      return
+    }
+
     try {
-      const { signer } = await getWeb3Connection()
+      const signer = library.getSigner()
+
       const contract = new ethers.Contract(
-        nftMarketAddress,
-        NFTMarket.abi,
+        contractAddresses[chainId],
+        contractArtifact.abi,
         signer
       )
       setLoadingBurnOrRevoke(true)
@@ -98,10 +129,11 @@ export default function CreatorDashboard() {
   async function revokeNft(nft: NftInterface) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
     try {
-      const { signer } = await getWeb3Connection()
+      const signer = library.getSigner()
+
       const contract = new ethers.Contract(
-        nftMarketAddress,
-        NFTMarket.abi,
+        contractAddresses[chainId],
+        contractArtifact.abi,
         signer
       )
       setLoadingBurnOrRevoke(true)
@@ -122,6 +154,12 @@ export default function CreatorDashboard() {
   return (
     <div>
       <div className="p-4">
+        {error && (
+          <p className="mt-4 text-center text-xl font-bold text-red-200">
+            {error}
+          </p>
+        )}
+
         <h2 className="text-2xl py-2">Items Created</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {loadingState === "not-loaded" && <Spinner />}

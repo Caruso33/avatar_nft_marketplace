@@ -1,11 +1,13 @@
+import { useWeb3React } from "@web3-react/core"
 import axios from "axios"
 import { ethers } from "ethers"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import NFTMarket from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json"
-import { getWeb3Connection } from "../components/web3/utils"
-import { nftMarketAddress } from "../config"
+import {
+  contractAddresses,
+  contractArtifact,
+} from "../constants/hardhat-helper"
 
 export default function ResellNFT() {
   const [formInput, updateFormInput] = useState({ price: "", image: "" })
@@ -13,32 +15,57 @@ export default function ResellNFT() {
   const { id, tokenURI } = router.query
   const { image, price } = formInput
 
-  useEffect(() => {
-    async function fetchNFT() {
-      if (!tokenURI) return
+  const [error, setError] = useState("")
 
-      try {
-        const meta = await axios.get(tokenURI as string)
+  const { active, chainId, library } = useWeb3React()
 
-        updateFormInput((state) => ({ ...state, image: meta.data.image }))
-      } catch (e) {
-        console.error(e)
-      }
+  async function fetchNFT() {
+    if (!tokenURI) return
+
+    try {
+      const meta = await axios.get(tokenURI as string)
+
+      updateFormInput((state) => ({ ...state, image: meta.data.image }))
+    } catch (e) {
+      console.error(e)
     }
+  }
 
+  useEffect(() => {
     fetchNFT()
   }, [id, tokenURI])
 
-  async function listNFTForSale() {
-    if (!price) return
+  useEffect(() => {
+    if (active && error) {
+      setError("")
+      fetchNFT()
+    }
+  }, [active])
 
-    const { signer } = await getWeb3Connection()
+  async function listNFTForSale() {
+    if (!active) {
+      setError("No active provider found. Please connect to a wallet.")
+      return
+    }
+
+    if (!price) {
+      setError("No price specified.")
+      return
+    }
+
+    const signer = library.getSigner()
+
+    const contract = new ethers.Contract(
+      contractAddresses[chainId],
+      contractArtifact.abi,
+      signer
+    )
 
     const priceFormatted = ethers.utils.parseUnits(formInput.price, "ether")
-    let contract = new ethers.Contract(nftMarketAddress, NFTMarket.abi, signer)
-    let listingPrice = await contract.getListingPrice()
 
+    let listingPrice = await contract.getListingPrice()
     listingPrice = listingPrice.toString()
+
     let transaction = await contract.resellToken(id, priceFormatted, {
       value: listingPrice,
     })
@@ -50,9 +77,18 @@ export default function ResellNFT() {
   return (
     <div className="flex justify-center">
       <div className="w-1/2 flex flex-col pb-12">
+        {error && (
+          <p className="mt-4 text-center text-xl font-bold text-red-200">
+            {error}
+          </p>
+        )}
+
         <input
           placeholder="Asset Price in Eth"
           className="mt-2 border rounded p-4"
+          type="number"
+          min={0}
+          step={0.01}
           onChange={(e) =>
             updateFormInput({ ...formInput, price: e.target.value })
           }
