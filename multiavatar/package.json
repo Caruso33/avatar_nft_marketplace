@@ -1,0 +1,30 @@
+{
+  "name": "multiavatar",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "compile": "yarn hardhat compile",
+    "create:avatars": "yarn hardhat createAvatars --number-of-avatars 10",
+    "upload:files": "yarn hardhat uploadToIpfs",
+    "create:marketNfts": "yarn hardhat createMarketNfts --price 0.001",
+    "run:all:local": "yarn run compile && yarn hardhat createAvatars --number-of-avatars 2 && yarn hardhat uploadToIpfs && yarn hardhat createMarketNfts --price 0.001 --network localhost",
+    "run:all:mumbai": "yarn run compile && yarn hardhat createAvatars --number-of-avatars 20 && yarn hardhat uploadToIpfs && yarn hardhat createMarketNfts --price 0.001 --network mumbai"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^7.2.0",
+    "@multiavatar/multiavatar": "^1.0.7",
+    "@openzeppelin/contracts": "^4.6.0",
+    "@pinata/sdk": "^1.1.26",
+    "dotenv": "^16.0.1",
+    "hardhat": "^2.9.9",
+    "svg2img": "^1.0.0-beta.1"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.0",
+    "chai": "^4.2.0",
+    "ethereum-waffle": "^3.0.0",
+    "ethers": "^5.0.0"
+  }
+}
