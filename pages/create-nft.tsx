@@ -1,17 +1,16 @@
 import multiavatar from "@multiavatar/multiavatar"
-import { ethers, providers } from "ethers"
+import { useWeb3React } from "@web3-react/core"
+import { ethers } from "ethers"
 import { create as ipfsHttpClient } from "ipfs-http-client"
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import saveSvgAsPng from "save-svg-as-png"
-import NFTMarket from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json"
-import {
-  contractArtifact,
-  contractAddresses,
-} from "../constants/hardhat-helper"
 import Spinner from "../components/Spinner"
-import { getWeb3Connection } from "../components/web3/utils"
+import {
+  contractAddresses,
+  contractArtifact,
+} from "../constants/hardhat-helper"
 
 const client = ipfsHttpClient({ url: "https://ipfs.infura.io:5001/api/v0" })
 
@@ -29,6 +28,15 @@ export default function CreateItem() {
   const [isCreatingItem, setIsCreatingItem] = useState<boolean>(false)
 
   const isLoading = isImageUploading || isMetaUploading || isCreatingItem
+
+  const [error, setError] = useState("")
+  const { active, chainId, library } = useWeb3React()
+
+  useEffect(() => {
+    if (active && error) {
+      setError("")
+    }
+  }, [active])
 
   const router = useRouter()
 
@@ -100,7 +108,6 @@ export default function CreateItem() {
     const { name, description, price } = formInput
     if (!name || !description || !price || (!fileUrl && !fileSvgPath)) {
       console.error("Please fill all inputs")
-      console.log(!name, !description, !price, !fileUrl, !fileSvgPath)
       return
     }
 
@@ -133,17 +140,20 @@ export default function CreateItem() {
   }
 
   async function listNFTForSale() {
+    if (!active) {
+      setError("No active provider found. Please connect to a wallet.")
+      return
+    }
+
     const url = await uploadToIPFS()
     if (!url) return
 
-    console.log({ url })
-
-    const { network, signer } = await getWeb3Connection()
+    const signer = library.getSigner()
 
     /* next, create the item */
     const price = ethers.utils.parseUnits(formInput.price, "ether")
     const contract = new ethers.Contract(
-      contractAddresses[network.chainId],
+      contractAddresses[chainId],
       contractArtifact.abi,
       signer
     )
@@ -186,6 +196,9 @@ export default function CreateItem() {
 
         <input
           placeholder="Asset Price in Eth"
+          type="number"
+          min={0}
+          step={0.01}
           className="mt-2 border rounded p-4"
           onChange={(e) =>
             updateFormInput({ ...formInput, price: e.target.value })
@@ -256,6 +269,12 @@ export default function CreateItem() {
             dangerouslySetInnerHTML={{ __html: fileSvgPath as string }}
           />
         </div>
+
+        {error && (
+          <p className="mt-4 text-center text-xl font-bold text-red-200">
+            {error}
+          </p>
+        )}
 
         <button
           onClick={listNFTForSale}
