@@ -1,9 +1,9 @@
+import { useWeb3React } from "@web3-react/core"
 import { ethers } from "ethers"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { getNftData } from "../components/index/utils"
 import Spinner from "../components/Spinner"
-import { getWeb3Connection } from "../components/web3/utils"
 import {
   contractAddresses,
   contractArtifact,
@@ -15,10 +15,19 @@ export default function Home() {
   const [nfts, setNfts] = useState<NftInterface[]>([])
   const [loadingState, setLoadingState] = useState("not-loaded")
   const [loadingBuy, setLoadingBuy] = useState(false)
+  const [error, setError] = useState("")
+
+  const { active, chainId, library } = useWeb3React()
 
   useEffect(() => {
     loadNFTs()
   }, [])
+
+  useEffect(() => {
+    if (active && error) {
+      setError("")
+    }
+  }, [active])
 
   async function loadNFTs() {
     /* create a generic provider and query for unsold market items */
@@ -40,7 +49,7 @@ export default function Home() {
     let items: NftInterface[] = []
     try {
       const contract = new ethers.Contract(
-        contractAddresses[(await provider.getNetwork()).chainId],
+        contractAddresses[chainId || process.env.NEXT_PUBLIC_DEPLOYED_CHAINID],
         contractArtifact.abi,
         provider
       )
@@ -65,9 +74,16 @@ export default function Home() {
   async function buyNft(nft: NftInterface) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
     try {
-      const { signer } = await getWeb3Connection()
+      if (!active) {
+        setError("No active provider found. Please connect to a wallet.")
+        return
+      }
+      setError("")
+
+      const signer = library.getSigner()
+
       const contract = new ethers.Contract(
-        contractAddresses,
+        contractAddresses[chainId],
         contractArtifact.abi,
         signer
       )
@@ -92,6 +108,12 @@ export default function Home() {
   return (
     <div className="flex justify-center">
       <div className="px-4" style={{ maxWidth: "1600px" }}>
+        {error && (
+          <p className="mt-4 text-center text-xl font-bold text-red-200">
+            {error}
+          </p>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {loadingState === "not-loaded" && <Spinner />}
 

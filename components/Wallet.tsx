@@ -1,7 +1,8 @@
 import { useWeb3React } from "@web3-react/core"
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector"
-import connectors from "./web3/connectors"
+import Router from "next/router"
 import { BiWallet } from "react-icons/bi"
+import connectors from "./web3/connectors"
 
 function Wallet() {
   const { active, account, activate, deactivate } = useWeb3React()
@@ -20,6 +21,8 @@ function Wallet() {
         }
 
         await activate(connector)
+        // Router.reload()
+        localStorage.setItem("provider", connectorId)
       } catch (error) {
         console.error(error)
       }
@@ -29,6 +32,7 @@ function Wallet() {
   async function handleDisconnect() {
     try {
       deactivate()
+      localStorage.removeItem("provider")
     } catch (error) {
       console.error(error)
     }
@@ -39,7 +43,7 @@ function Wallet() {
       <div className="flex">
         <div style={{ maxWidth: "30vw", wordBreak: "break-all" }}>
           <div className="w-full text-center">
-            <BiWallet size={"2rem"} />
+            <BiWallet size={20} />
           </div>
 
           {account}

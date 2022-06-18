@@ -9,6 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const provider = window.localStorage.getItem(
       "provider"
     ) as keyof typeof connectors
+
     if (provider) activate(connectors[provider])
   }, [])
 
