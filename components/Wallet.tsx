@@ -1,24 +1,11 @@
 import { useWeb3React } from "@web3-react/core"
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector"
-import Router from "next/router"
-import { useEffect, useRef } from "react"
 import { BiWallet } from "react-icons/bi"
+import getBalanceExplorerUrl from "../utils/getBalanceExplorerUrl"
 import connectors from "./web3/connectors"
 
 function Wallet() {
-  const { active, account, activate, deactivate } = useWeb3React()
-
-  const prevAccount = useRef(account)
-
-  // useEffect(() => {
-  //   if (!prevAccount.current) prevAccount.current = account
-
-  //   if (account && prevAccount.current && prevAccount.current !== account) {
-  //     console.log("Account changed, reloading page.")
-  //     prevAccount.current = account
-  //     Router.reload()
-  //   }
-  // }, [account])
+  const { active, chainId, account, activate, deactivate } = useWeb3React()
 
   function createConnectHandler(connectorId: string) {
     return async () => {
@@ -59,7 +46,7 @@ function Wallet() {
             <BiWallet size={20} />
           </div>
 
-          {account}
+          <a href={getBalanceExplorerUrl(chainId, account)}>{account}</a>
         </div>
 
         <button

@@ -40,6 +40,10 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Link href="/dashboard">
             <a className="mr-6 text-pink-500">Creator Dashboard</a>
           </Link>
+
+          <Link href="/stats">
+            <a className="mr-6 text-pink-500">Stats</a>
+          </Link>
         </div>
       </nav>
 

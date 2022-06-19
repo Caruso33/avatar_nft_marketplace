@@ -4,7 +4,6 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import { getNftData } from "../components/index/utils"
 import Spinner from "../components/Spinner"
-import { getWeb3Connection } from "../components/web3/utils"
 import {
   contractArtifact,
   contractAddresses,
