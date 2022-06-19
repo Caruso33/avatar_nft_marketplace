@@ -22,10 +22,12 @@ module.exports = {
     mumbai: {
       url: process.env.NEXT_PUBLIC_POLYGON_MUMBAI,
       accounts: [process.env.PRIVATE_KEY],
+      chainId: 80001,
     },
     polygon: {
       url: process.env.NEXT_PUBLIC_POLYGON_MAIN,
       accounts: [process.env.PRIVATE_KEY],
+      chainId: 137,
     },
   },
   namedAccounts: {
@@ -39,7 +41,7 @@ module.exports = {
   etherscan: {
     // yarn hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
     apiKey: {
-      mumbai: process.env.POLYSCAN_API_KEY,
+      polygonMumbai: process.env.POLYSCAN_API_KEY,
       polygon: process.env.POLYSCAN_API_KEY,
       rinkeby: process.env.ETHERSCAN_API_KEY,
       kovan: process.env.ETHERSCAN_API_KEY,

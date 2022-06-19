@@ -20,3 +20,4 @@ module.exports = async ({ deployments }) => {
 }
 
 module.exports.tags = ["all", "addresses"]
+module.exports.dependencies = ["contract"];
