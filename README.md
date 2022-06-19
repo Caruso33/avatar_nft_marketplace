@@ -44,9 +44,10 @@ nftMarket deployed to: 0xB70C94932E241120e45B2cBE06b07D90a100Fd89
 
 ## Tools used
 
-- Solidity
-- Polygon
-- Nextjs
-- Tailwindcss
-- Web3Modal
-- Multiavatar
+- [Solidity](https://soliditylang.org/)
+- [Polygon](https://polygon.technology/)
+- [NextJs](https://nextjs.org/)
+- [Tailwindcss](https://tailwindcss.com/)
+- [Web3-React](https://github.com/NoahZinsmeister/web3-react)
+- [Multiavatar](https://multiavatar.com/)
+- [Unstoppable domains](https://unstoppabledomains.com)
