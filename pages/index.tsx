@@ -49,7 +49,9 @@ export default function Home() {
     let items: NftInterface[] = []
     try {
       const contract = new ethers.Contract(
-        contractAddresses[chainId! || process.env.NEXT_PUBLIC_DEPLOYED_CHAINID!],
+        contractAddresses[
+          chainId! || process.env.NEXT_PUBLIC_DEPLOYED_CHAINID!
+        ],
         contractArtifact.abi,
         provider
       )
@@ -120,58 +122,61 @@ export default function Home() {
             (!nfts.length ? (
               <h1 className="px-20 py-10 text-2xl">No items in marketplace</h1>
             ) : (
-              nfts.map((nft: NftInterface, i) => (
-                <div
-                  key={`nft-listing-${i}`}
-                  className="flex flex-col border shadow rounded-xl overflow-hidden"
-                >
-                  {nft.image ? (
-                    <div
-                      className="text-center mt-4"
-                      style={{ height: "100%", width: "100%" }}
-                    >
-                      <Image
-                        src={nft.image}
-                        alt="Nft image"
-                        width="100%"
-                        height="100%"
-                        layout="responsive"
-                        objectFit="contain"
-                        crossOrigin="anonymous"
-                        unoptimized={true}
-                      />
-                    </div>
-                  ) : (
-                    <div style={{ height: "100%", width: "100%" }} />
-                  )}
+              nfts.map((nft: NftInterface, i) => {
+                console.log(nft.image)
+                return (
+                  <div
+                    key={`nft-listing-${i}`}
+                    className="flex flex-col border shadow rounded-xl overflow-hidden"
+                  >
+                    {nft.image ? (
+                      <div
+                        className="text-center mt-4"
+                        style={{ height: "100%", width: "100%" }}
+                      >
+                        <Image
+                          src={nft.image}
+                          alt="Nft image"
+                          width="100%"
+                          height="100%"
+                          layout="responsive"
+                          objectFit="contain"
+                          crossOrigin="anonymous"
+                          unoptimized={true}
+                        />
+                      </div>
+                    ) : (
+                      <div style={{ height: "100%", width: "100%" }} />
+                    )}
 
-                  <div className="p-4">
-                    <p
-                      style={{ height: "64px" }}
-                      className="text-2xl font-semibold"
-                    >
-                      {nft?.name}
-                    </p>
-                    <div style={{ height: "70px", overflow: "hidden" }}>
-                      <p className="text-gray-400">{nft?.description}</p>
+                    <div className="p-4">
+                      <p
+                        style={{ height: "64px" }}
+                        className="text-2xl font-semibold"
+                      >
+                        {nft?.name}
+                      </p>
+                      <div style={{ height: "70px", overflow: "hidden" }}>
+                        <p className="text-gray-400">{nft?.description}</p>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-black">
+                      <p className="text-2xl font-bold text-white">
+                        {nft?.price?.toString()} ETH
+                      </p>
+
+                      <button
+                        className="mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded"
+                        onClick={() => buyNft(nft)}
+                        disabled={loadingBuy}
+                      >
+                        {!loadingBuy ? "Buy" : <Spinner />}
+                      </button>
                     </div>
                   </div>
-
-                  <div className="p-4 bg-black">
-                    <p className="text-2xl font-bold text-white">
-                      {nft?.price?.toString()} ETH
-                    </p>
-
-                    <button
-                      className="mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded"
-                      onClick={() => buyNft(nft)}
-                      disabled={loadingBuy}
-                    >
-                      {!loadingBuy ? "Buy" : <Spinner />}
-                    </button>
-                  </div>
-                </div>
-              ))
+                )
+              })
             ))}
         </div>
       </div>

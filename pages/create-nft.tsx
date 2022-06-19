@@ -85,7 +85,9 @@ export default function CreateItem() {
 
     try {
       const dataUri = await saveSvgAsPng.svgAsDataUri(
-        document.getElementsByTagName("svg")[0]
+        // TODO: Find another way to query the svg
+        // querySelector("#svg-container,svg") doesn't work
+        document.getElementsByTagName("svg")[1]
       )
 
       const svgFile = await fetch(dataUri)
@@ -93,9 +95,11 @@ export default function CreateItem() {
           return res.arrayBuffer()
         })
         .then(function (buf) {
-          return new File([buf], formInput?.name || "Avatar", {
+          const file = new File([buf], formInput?.name || "Avatar", {
             type: "image/svg+xml",
           })
+
+          return file
         })
 
       return svgFile

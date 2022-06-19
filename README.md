@@ -24,9 +24,10 @@ Recent addresses:
 0x30a1b68D207c39924513424F2f9969a02eba2E2E
 0xA4d1F6D750fe425A95DBb204115587D2c3D81DAf
 0xB70C94932E241120e45B2cBE06b07D90a100Fd89
+0x0B19963b4B03c03aa46Cadf0f32fa016b41DaB6A
  -->
 
-nftMarket deployed to: 0x0B19963b4B03c03aa46Cadf0f32fa016b41DaB6A
+nftMarket deployed to: 0x586169a258502b2F36AE99ccc462CbFB902ed3f2
 
 The frontend is deployed to: [avatar-nftmarket.vercel.app](https://avatar-nftmarket.vercel.app/)
 
