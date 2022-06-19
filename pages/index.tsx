@@ -49,7 +49,7 @@ export default function Home() {
     let items: NftInterface[] = []
     try {
       const contract = new ethers.Contract(
-        contractAddresses[chainId || process.env.NEXT_PUBLIC_DEPLOYED_CHAINID],
+        contractAddresses[chainId! || process.env.NEXT_PUBLIC_DEPLOYED_CHAINID!],
         contractArtifact.abi,
         provider
       )
@@ -82,7 +82,7 @@ export default function Home() {
       const signer = library.getSigner()
 
       const contract = new ethers.Contract(
-        contractAddresses[chainId],
+        contractAddresses[chainId!],
         contractArtifact.abi,
         signer
       )

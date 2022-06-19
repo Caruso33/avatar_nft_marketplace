@@ -6,8 +6,9 @@ import { useEffect, useState } from "react"
 import { getNftData } from "../components/index/utils"
 import {
   contractAddresses,
-  contractArtifact,
+  contractArtifact
 } from "../constants/hardhat-helper"
+import MarketItemInterface from "../types/MarketItemInterface"
 import NftInterface from "../types/NftInterface"
 
 export default function MyAssets() {
@@ -39,7 +40,7 @@ export default function MyAssets() {
     const signer = library.getSigner()
 
     const contract = new ethers.Contract(
-      contractAddresses[chainId],
+      contractAddresses[chainId!],
       contractArtifact.abi,
       signer
     )

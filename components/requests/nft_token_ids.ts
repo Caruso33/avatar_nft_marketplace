@@ -40,7 +40,7 @@ async function getCovalenCollection(chainId: number) {
 
   try {
     const response = axios.get(url, {
-      auth: { username: process.env.NEXT_PUBLIC_COVALENT_API! },
+      auth: { username: process.env.NEXT_PUBLIC_COVALENT_API!, password: "" },
     })
 
     return response
@@ -63,7 +63,7 @@ function getCovalentBalanceRequest(
 
   try {
     const response = axios.get(url, {
-      auth: { username: process.env.NEXT_PUBLIC_COVALENT_API! },
+      auth: { username: process.env.NEXT_PUBLIC_COVALENT_API!, password: "" },
     })
 
     return response
@@ -87,7 +87,7 @@ function getCovalentEventRequest(
 
   try {
     const response = axios.get(url, {
-      auth: { username: process.env.NEXT_PUBLIC_COVALENT_API! },
+      auth: { username: process.env.NEXT_PUBLIC_COVALENT_API!, password: "" },
     })
 
     return response
@@ -102,7 +102,9 @@ function getCovalentNFTRequest(chainId: number, endpoint: string) {
   try {
     const response = axios.get(
       `${covalent_url}${chainId}/tokens/${contractAddress}/${endpoint}/`,
-      { auth: { username: process.env.NEXT_PUBLIC_COVALENT_API! } }
+      {
+        auth: { username: process.env.NEXT_PUBLIC_COVALENT_API!, password: "" },
+      }
     )
 
     return response

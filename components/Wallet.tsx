@@ -46,7 +46,7 @@ function Wallet() {
             <BiWallet size={20} />
           </div>
 
-          <a href={getBalanceExplorerUrl(chainId, account)}>{account}</a>
+          <a href={getBalanceExplorerUrl(chainId!, account!)}>{account}</a>
         </div>
 
         <button

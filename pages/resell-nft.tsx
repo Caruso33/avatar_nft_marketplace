@@ -56,7 +56,7 @@ export default function ResellNFT() {
     const signer = library.getSigner()
 
     const contract = new ethers.Contract(
-      contractAddresses[chainId],
+      contractAddresses[chainId!],
       contractArtifact.abi,
       signer
     )

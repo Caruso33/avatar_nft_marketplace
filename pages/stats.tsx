@@ -20,7 +20,7 @@ export default function Stats() {
   const [isLoading, setIsLoading] = useState(true)
 
   const [tokenHolders, setTokenHolders] = useState([])
-  const [marketItems, setMarketItems] = useState([])
+  const [marketItems, setMarketItems] = useState<NftInterface[]>([])
 
   useEffect(() => {
     if (chainId) loadMarketData()
@@ -45,7 +45,7 @@ export default function Stats() {
       try {
         const contract = new ethers.Contract(
           contractAddresses[
-            chainId || process.env.NEXT_PUBLIC_DEPLOYED_CHAINID
+            chainId! || process.env.NEXT_PUBLIC_DEPLOYED_CHAINID!
           ],
           contractArtifact.abi,
           signer
@@ -87,6 +87,8 @@ export default function Stats() {
     return acc + Number(inc.price)
   }, 0)
 
+  const firstTokenHolder: TokenHolderInterface = tokenHolders?.[0]
+
   return (
     <div className="p-4">
       {isLoading && <Spinner />}
@@ -94,17 +96,17 @@ export default function Stats() {
       {!isLoading && (
         <>
           <h2 className="text-3xl font-bold mb-4">
-            Name: {tokenHolders?.[0]?.contract_name} (
-            {tokenHolders?.[0]?.contract_ticker_symbol})
+            Name: {firstTokenHolder?.contract_name} (
+            {firstTokenHolder?.contract_ticker_symbol})
           </h2>
 
           <h2 className="text-2xl font-bold mb-4">
             Unique Owners: {tokenHolders?.length}
           </h2>
 
-          {tokenHolders?.[0]?.total_supply && (
+          {firstTokenHolder?.total_supply && (
             <h3 className="text-2xl font-bold mb-4">
-              Total Supply: {tokenHolders?.[0]?.total_supply}
+              Total Supply: {firstTokenHolder?.total_supply}
             </h3>
           )}
 
@@ -116,7 +118,7 @@ export default function Stats() {
                 <p className="text-xl">
                   <BiWallet />
 
-                  <a href={getBalanceExplorerUrl(chainId, holder.address)}>
+                  <a href={getBalanceExplorerUrl(chainId!, holder.address)}>
                     {address}
                   </a>
                 </p>

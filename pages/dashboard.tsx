@@ -43,7 +43,7 @@ export default function CreatorDashboard() {
     const signer = library.getSigner()
 
     const contract = new ethers.Contract(
-      contractAddresses[chainId],
+      contractAddresses[chainId!],
       contractArtifact.abi,
       signer
     )
@@ -74,7 +74,7 @@ export default function CreatorDashboard() {
     const signer = library.getSigner()
 
     const contract = new ethers.Contract(
-      contractAddresses[chainId],
+      contractAddresses[chainId!],
       contractArtifact.abi,
       signer
     )
@@ -106,7 +106,7 @@ export default function CreatorDashboard() {
       const signer = library.getSigner()
 
       const contract = new ethers.Contract(
-        contractAddresses[chainId],
+        contractAddresses[chainId!],
         contractArtifact.abi,
         signer
       )
@@ -131,7 +131,7 @@ export default function CreatorDashboard() {
       const signer = library.getSigner()
 
       const contract = new ethers.Contract(
-        contractAddresses[chainId],
+        contractAddresses[chainId!],
         contractArtifact.abi,
         signer
       )

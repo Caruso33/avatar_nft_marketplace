@@ -153,7 +153,7 @@ export default function CreateItem() {
     /* next, create the item */
     const price = ethers.utils.parseUnits(formInput.price, "ether")
     const contract = new ethers.Contract(
-      contractAddresses[chainId],
+      contractAddresses[chainId!],
       contractArtifact.abi,
       signer
     )
