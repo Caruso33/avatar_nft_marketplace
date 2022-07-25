@@ -2,6 +2,8 @@
 
 ## This is the repo for the [Encode Polygon Hackathon](https://www.encode.club/polygon-hackathon)
 
+![Avatar NFT Marketplace](https://i.imgur.com/DVMh2qc.png)
+
 Remarks:
 
 This repo is based on my repos [NftMarketplace](https://github.com/Caruso33/blockchain_dapps/tree/master/nader/4_nft_marketplace)
